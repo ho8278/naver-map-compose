@@ -8,70 +8,42 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
 import com.naver.maps.map.clustering.ClusterMarkerInfo
-import com.naver.maps.map.clustering.ClusterMarkerUpdater
 import com.naver.maps.map.clustering.Clusterer
 import com.naver.maps.map.clustering.ClusteringKey
 import com.naver.maps.map.clustering.LeafMarkerInfo
-import com.naver.maps.map.clustering.LeafMarkerUpdater
 import com.naver.maps.map.overlay.Overlay
-
-@Composable
-internal fun rememberClusterMarkerUpdater(
-    composeUiViewRenderer: ComposeUiViewRenderer,
-    clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
-    onClickListener: (Overlay) -> Boolean,
-): ClusterMarkerUpdater {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val clusterContent = rememberUpdatedState(clusterContent)
-    val onClickListener = rememberUpdatedState(onClickListener)
-    return remember(clusterContent, onClickListener) {
-        ComposeClusterMarkerUpdater(
-            context,
-            composeUiViewRenderer,
-            coroutineScope,
-            clusterContent,
-            onClickListener,
-        )
-    }
-}
-
-@Composable
-internal fun rememberLeafMarkerUpdater(
-    composeUiViewRenderer: ComposeUiViewRenderer,
-    leafContent: @Composable (LeafMarkerInfo) -> Unit,
-    onClickListener: (Overlay) -> Boolean,
-): LeafMarkerUpdater {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val leafContent = rememberUpdatedState(leafContent)
-    val onClickListener = rememberUpdatedState(onClickListener)
-    return remember(leafContent, onClickListener) {
-        ComposeLeafMarkerUpdater(
-            context,
-            composeUiViewRenderer,
-            coroutineScope,
-            leafContent,
-            onClickListener,
-        )
-    }
-}
 
 @Composable
 public fun <T : ClusteringKey> rememberClusterer(
     clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
+    onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
     leafContent: @Composable (LeafMarkerInfo) -> Unit,
-    onClickListener: (Overlay) -> Boolean,
+    onClickLeaf: (LeafMarkerInfo, Overlay) -> Boolean,
 ): Clusterer<T> {
+    val context = LocalContext.current
     val composeUiRenderer = rememberComposeUiViewRenderer()
-    val clusterMarkerUpdater =
-        rememberClusterMarkerUpdater(composeUiRenderer, clusterContent, onClickListener)
-    val leafMarkerUpdater =
-        rememberLeafMarkerUpdater(composeUiRenderer, leafContent, onClickListener)
-    return remember(clusterMarkerUpdater, leafMarkerUpdater) {
+    val coroutineScope = rememberCoroutineScope()
+    val clusterContent = rememberUpdatedState(clusterContent)
+    val onClickCluster = rememberUpdatedState(onClickCluster)
+    val leafContent = rememberUpdatedState(leafContent)
+    val onClickLeaf = rememberUpdatedState(onClickLeaf)
+    val composeClusterMarkerUpdater = remember(
+        context, composeUiRenderer, clusterContent, onClickCluster, leafContent, onClickLeaf
+    ) {
+        ComposeClusterMarkerUpdater(
+            context,
+            composeUiRenderer,
+            coroutineScope,
+            clusterContent,
+            onClickCluster,
+            leafContent,
+            onClickLeaf
+        )
+    }
+    return remember(composeClusterMarkerUpdater) {
         Clusterer.ComplexBuilder<T>()
-            .clusterMarkerUpdater(clusterMarkerUpdater)
-            .leafMarkerUpdater(leafMarkerUpdater)
+            .clusterMarkerUpdater(composeClusterMarkerUpdater)
+            .leafMarkerUpdater(composeClusterMarkerUpdater)
             .build()
     }
 }
@@ -81,10 +53,11 @@ public fun <T : ClusteringKey> rememberClusterer(
 public fun <T : ClusteringKey> Clustering(
     items: Map<T, Any?>,
     clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
+    onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
     leafContent: @Composable (LeafMarkerInfo) -> Unit,
-    onClickListener: (Overlay) -> Boolean,
+    onClickLeaf: (LeafMarkerInfo, Overlay) -> Boolean,
 ) {
-    val clusterer = rememberClusterer<T>(clusterContent, leafContent, onClickListener)
+    val clusterer = rememberClusterer<T>(clusterContent, onClickCluster, leafContent, onClickLeaf)
     val itemsState = rememberUpdatedState(items)
 
     LaunchedEffect(items) {
