@@ -1,7 +1,9 @@
 package com.naver.maps.map.compose
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionContext
@@ -9,6 +11,8 @@ import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
 import com.naver.maps.map.MapView
 import java.io.Closeable
 
@@ -84,4 +88,26 @@ private class NoDrawContainerView(context: Context) : ViewGroup(context) {
 
     override fun dispatchDraw(canvas: Canvas) {
     }
+}
+
+internal fun renderViewToBitmap(fakeCanvas: Canvas, view: AbstractComposeView): Bitmap {
+    /* AndroidComposeView triggers LayoutNode's layout phase in the View draw phase,
+       so trigger a draw to an empty canvas to force that */
+    view.draw(fakeCanvas)
+    val viewParent =
+        view.parent as? ViewGroup ?: return createBitmap(20, 20)
+    view.measure(
+        View.MeasureSpec.makeMeasureSpec(viewParent.width, View.MeasureSpec.AT_MOST),
+        View.MeasureSpec.makeMeasureSpec(viewParent.height, View.MeasureSpec.AT_MOST),
+    )
+    view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+    val bitmap = createBitmap(
+        view.measuredWidth.takeIf { it > 0 } ?: 1,
+        view.measuredHeight.takeIf { it > 0 } ?: 1
+    )
+    bitmap.applyCanvas {
+        view.draw(this)
+    }
+
+    return bitmap
 }
