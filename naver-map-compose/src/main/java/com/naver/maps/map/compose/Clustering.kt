@@ -40,10 +40,12 @@ public fun <T : ClusteringKey> rememberClusterer(
             onClickLeaf
         )
     }
-    return remember(composeClusterMarkerUpdater) {
+    val markerManager = remember { ComposeClusterMarkerManager() }
+    return remember(composeClusterMarkerUpdater, markerManager) {
         Clusterer.ComplexBuilder<T>()
             .clusterMarkerUpdater(composeClusterMarkerUpdater)
             .leafMarkerUpdater(composeClusterMarkerUpdater)
+            .markerManager(markerManager)
             .build()
     }
 }
