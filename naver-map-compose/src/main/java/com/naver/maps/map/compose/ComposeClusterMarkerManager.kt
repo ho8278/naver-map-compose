@@ -21,6 +21,9 @@ internal class ComposeClusterMarkerManager(
     ) {
         val closeable = marker.tag as? Closeable
         closeable?.close()
+        marker.tag = null
+        marker.onClickListener = null
+        
         markerPool.addLast(marker)
     }
 
