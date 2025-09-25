@@ -29,7 +29,7 @@ import com.naver.maps.map.compose.demo.camera.CameraMoveScreen
 import com.naver.maps.map.compose.demo.camera.CameraUpdateParamsScreen
 import com.naver.maps.map.compose.demo.camera.FitBoundsScreen
 import com.naver.maps.map.compose.demo.camera.PivotScreen
-import com.naver.maps.map.compose.demo.clustering.ClusteringScreen
+import com.naver.maps.map.compose.demo.clustering.SimpleClusteringScreen
 import com.naver.maps.map.compose.demo.clustering.ComplexClusteringScreen
 import com.naver.maps.map.compose.demo.clustering.TedClusteringScreen
 import com.naver.maps.map.compose.demo.event.MapClickEventScreen
@@ -193,7 +193,7 @@ fun NavGraph(
 
         // CLUSTERING
         composable(Destination.Clustering.route) {
-            ClusteringScreen(upPress = upPress)
+            SimpleClusteringScreen(upPress = upPress)
         }
         composable(Destination.ComplexClustering.route) {
             ComplexClusteringScreen(upPress = upPress)

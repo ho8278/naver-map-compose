@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun ClusteringScreen(upPress: () -> Unit) {
+fun SimpleClusteringScreen(upPress: () -> Unit) {
     Scaffold(
         topBar = {
             DefaultTopAppBar(
@@ -62,14 +62,14 @@ fun ClusteringScreen(upPress: () -> Unit) {
         },
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
-            Clustering()
+            SimpleClustering()
         }
     }
 }
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-private fun Clustering() {
+private fun SimpleClustering() {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(MapConstants.EXTENT_KOREA.center, 4.0)
     }
