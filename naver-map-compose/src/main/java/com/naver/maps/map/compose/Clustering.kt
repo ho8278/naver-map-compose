@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.platform.LocalContext
 import com.naver.maps.map.clustering.ClusterMarkerInfo
 import com.naver.maps.map.clustering.Clusterer
@@ -54,9 +55,9 @@ public fun <T : ClusteringKey> rememberClusterer(
 @Composable
 public fun <T : ClusteringKey> Clustering(
     items: Map<T, Any?>,
-    clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
+    clusterContent: @[UiComposable Composable] (ClusterMarkerInfo) -> Unit,
     onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
-    leafContent: @Composable (LeafMarkerInfo) -> Unit,
+    leafContent: @[UiComposable Composable] (LeafMarkerInfo) -> Unit,
     onClickLeaf: (LeafMarkerInfo, Overlay) -> Boolean,
 ) {
     val clusterer = rememberClusterer<T>(clusterContent, onClickCluster, leafContent, onClickLeaf)
