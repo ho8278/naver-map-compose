@@ -53,6 +53,7 @@ public fun <T : ClusteringKey> rememberClusterer(
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
+@NaverMapComposable
 public fun <T : ClusteringKey> Clustering(
     items: Map<T, Any?>,
     clusterContent: @[UiComposable Composable] (ClusterMarkerInfo) -> Unit,
