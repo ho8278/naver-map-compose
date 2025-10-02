@@ -117,6 +117,27 @@ public fun <T : ClusteringKey> rememberClusterer(
     }
 }
 
+/**
+ * 네이버맵에 클러스터링 기능을 추가합니다.
+ *
+ * @param items 클러스터링할 아이템들. key 는 [ClusteringKey]인터페이스를 구현해야 하며 value 는 각 마커 위치에 대한 태그값.
+ * @param clusterContent 클러스터 마커의 UI 컴포저블.
+ * @param onClickCluster 클러스터 마커 클릭 시 호출되는 콜백.
+ * @param leafContent 리프 마커의 UI 컴포저블.
+ * @param onClickLeaf 리프 마커 클릭 시 호출되는 콜백.
+ * @param thresholdStrategy 두 Node를 클러스터링할 기준 거리를 구하는 전략을 지정합니다.
+ * @param distanceStrategy 각 Node간의 거리를 측정하는 전략을 지정합니다.
+ * @param tagMergeStrategy 부모 Cluster의 자식 Node들의 태그를 병합하는 전략을 지정합니다.
+ * @param positionStrategy 한 Cluster의 좌표를 정하는 전략을 지정합니다.
+ * @param maxScreenDistance 클러스터링할 최대 화면 거리를 지정합니다.
+ * @param animationDuration 카메라 확대/축소시 클러스터가 펼쳐지는/합쳐지는 애니메이션의 지속 시간을 지정합니다.
+ * @param maxClusteringZoom 클러스터링할 최대 줌 레벨을 반환합니다.
+ * @param minClusteringZoom 클러스터링할 최소 줌 레벨을 지정합니다.
+ * @param maxIndexingZoom 인덱싱할 최대 줌 레벨을 지정합니다.
+ * @param minIndexingZoom 인덱싱할 최소 줌 레벨을 지정합니다.
+ * @param updateOnChange 화면상 마커를 갱신할 때 [com.naver.maps.map.NaverMap.OnCameraIdleListener] 대신
+ * [com.naver.maps.map.NaverMap.OnCameraChangeListener]를 사용할지 여부를 지정합니다.
+ */
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 @NaverMapComposable
