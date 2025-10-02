@@ -19,7 +19,7 @@ import com.naver.maps.map.clustering.Node
 import com.naver.maps.map.overlay.Overlay
 
 @Composable
-public fun <T : ClusteringKey> rememberClusterer(
+internal fun <T : ClusteringKey> rememberClusterer(
     clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
     onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
     leafContent: @Composable (LeafMarkerInfo) -> Unit,
