@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id("navermap.android.library")
     id("navermap.android.compose")
@@ -6,10 +8,45 @@ plugins {
     alias(libs.plugins.metalava)
 }
 
+
+
 android {
     namespace 'com.naver.maps.map.compose'
     kotlinOptions {
         freeCompilerArgs += '-Xexplicit-api=warning'
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates("io.github.ho8278", "navermap-compose", "0.1.0")
+
+    pom {
+        name = "NaverMap Compose"
+        description = "NaverMap Compose with clustering"
+        inceptionYear = "2025"
+        url = "https://github.com/ho8278/naver-map-compose"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "ho8278"
+                name = "ho8278"
+                url = "https://github.com/ho8278"
+            }
+        }
+        scm {
+            url = "https://github.com/ho8278/naver-map-compose"
+            connection = "scm:git:git://github.com/ho8278/naver-map-compose.git"
+            developerConnection = "scm:git:ssh://git@github.com/ho8278/naver-map-compose.git"
+        }
     }
 }
 
