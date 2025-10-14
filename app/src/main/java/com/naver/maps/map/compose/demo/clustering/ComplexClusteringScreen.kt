@@ -144,6 +144,19 @@ private fun ComplexClustering() {
                 Toast.makeText(context, "Clicked!", Toast.LENGTH_SHORT).show()
                 true
             },
+            updateClusterMarkerData = { info, marker ->
+                if(info.size > 100) {
+                    marker.isFlat = true
+                    marker.angle = 45f
+                } else {
+                    marker.isFlat = false
+                    marker.angle = 0f
+                }
+            },
+            updateLeafMarkerData = { info, marker ->
+                marker.isFlat = false
+                marker.angle = 0f
+            },
             minClusteringZoom = 9,
             maxClusteringZoom = 16,
             maxScreenDistance = 200.0,
