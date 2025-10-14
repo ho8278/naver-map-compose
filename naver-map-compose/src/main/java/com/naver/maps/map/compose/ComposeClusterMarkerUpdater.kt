@@ -26,10 +26,12 @@ internal class ComposeClusterMarkerUpdater(
     private val context: Context,
     private val composeUiViewRenderer: ComposeUiViewRenderer,
     private val coroutineScope: CoroutineScope,
-    private val clusterContent: State<@Composable ((ClusterMarkerInfo) -> Unit)?>,
+    private val clusterContent: State<@Composable (ClusterMarkerInfo) -> Unit>,
     private val onClickCluster: State<(ClusterMarkerInfo, Overlay) -> Boolean>,
-    private val leafContent: State<@Composable ((LeafMarkerInfo) -> Unit)?>,
+    private val leafContent: State<@Composable (LeafMarkerInfo) -> Unit>,
     private val onClickLeaf: State<(LeafMarkerInfo, Overlay) -> Boolean>,
+    private val updateClusterMarkerData: State<((ClusterMarkerInfo, Marker) -> Unit)?>,
+    private val updateLeafMarkerData: State<((LeafMarkerInfo, Marker) -> Unit)?>,
 ) : ClusterMarkerUpdater, LeafMarkerUpdater {
 
     private val fakeCanvas = Canvas()
@@ -41,7 +43,8 @@ internal class ComposeClusterMarkerUpdater(
         val tag = marker.tag as? Closeable
         tag?.close()
 
-        val view = InvalidatingComposeView(context, { leafContent.value?.invoke(info) })
+        updateLeafMarkerData.value?.invoke(info, marker)
+        val view = InvalidatingComposeView(context, { leafContent.value.invoke(info) })
         val handle = composeUiViewRenderer.startRenderingView(view)
         val job = collectInvalidateAndRerender(view, marker)
         marker.onClickListener = Overlay.OnClickListener { overlay ->
@@ -61,7 +64,8 @@ internal class ComposeClusterMarkerUpdater(
         val tag = marker.tag as? Closeable
         tag?.close()
 
-        val view = InvalidatingComposeView(context, { clusterContent.value?.invoke(info) })
+        updateClusterMarkerData.value?.invoke(info, marker)
+        val view = InvalidatingComposeView(context, { clusterContent.value.invoke(info) })
         val handle = composeUiViewRenderer.startRenderingView(view)
         val job = collectInvalidateAndRerender(view, marker)
         marker.onClickListener = Overlay.OnClickListener { overlay ->
