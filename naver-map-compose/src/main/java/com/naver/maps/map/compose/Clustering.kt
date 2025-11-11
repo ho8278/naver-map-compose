@@ -1,6 +1,7 @@
 package com.naver.maps.map.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -211,5 +212,10 @@ public fun <T : ClusteringKey> Clustering(
     }
     MapEffect(clusterer) {
         clusterer.map = it
+    }
+    DisposableEffect(itemsState) {
+        onDispose {
+            clusterer.clear()
+        }
     }
 }
