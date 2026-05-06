@@ -3,11 +3,9 @@ package com.naver.maps.map.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.platform.LocalContext
 import com.naver.maps.geometry.WebMercatorCoord
@@ -201,19 +199,25 @@ public fun <T : ClusteringKey> Clustering(
         minIndexingZoom,
         updateOnChange,
     )
-    val itemsState = rememberUpdatedState(items)
 
+    val currentKeys = remember { mutableSetOf<T>() }
     LaunchedEffect(items) {
-        snapshotFlow { itemsState.value }
-            .collect {
-                clusterer.clear()
-                clusterer.addAll(it)
-            }
+        val toAdd = items.keys - currentKeys
+        val toRemove = currentKeys - items.keys
+
+        if (toRemove.isNotEmpty()) {
+            clusterer.removeAll(toRemove)
+            currentKeys.removeAll(toRemove)
+        }
+        if (toAdd.isNotEmpty()) {
+            clusterer.addAll(toAdd.associateWith { items[it] })
+            currentKeys.addAll(toAdd)
+        }
     }
     MapEffect(clusterer) {
         clusterer.map = it
     }
-    DisposableEffect(itemsState) {
+    DisposableEffect(Unit) {
         onDispose {
             clusterer.clear()
         }
