@@ -22,9 +22,9 @@ import com.naver.maps.map.overlay.Overlay
 
 @Composable
 internal fun <T : ClusteringKey> rememberClusterer(
-    clusterContent: @Composable (ClusterMarkerInfo) -> Unit,
+    clusterContent: @Composable ((ClusterMarkerInfo) -> Unit)?,
     onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
-    leafContent: @Composable (LeafMarkerInfo) -> Unit,
+    leafContent: @Composable ((LeafMarkerInfo) -> Unit)?,
     onClickLeaf: (LeafMarkerInfo, Overlay) -> Boolean,
     updateClusterMarkerData: ((ClusterMarkerInfo, Marker) -> Unit)? = null,
     updateLeafMarkerData: ((LeafMarkerInfo, Marker) -> Unit)? = null,
@@ -49,10 +49,10 @@ internal fun <T : ClusteringKey> rememberClusterer(
     val onClickLeaf = rememberUpdatedState(onClickLeaf)
     val updateClusterMarkerData = rememberUpdatedState(updateClusterMarkerData)
     val updateLeafMarkerData = rememberUpdatedState(updateLeafMarkerData)
-    val thresholdStrategyState by rememberUpdatedState(thresholdStrategy)
-    val distanceStrategyState by rememberUpdatedState(distanceStrategy)
-    val tagMergeStrategyState by rememberUpdatedState(tagMergeStrategy)
-    val positionStrategyState by rememberUpdatedState(positionStrategy)
+    val thresholdStrategyState = rememberUpdatedState(thresholdStrategy)
+    val distanceStrategyState = rememberUpdatedState(distanceStrategy)
+    val tagMergeStrategyState = rememberUpdatedState(tagMergeStrategy)
+    val positionStrategyState = rememberUpdatedState(positionStrategy)
     val composeClusterMarkerUpdater = remember(
         context,
         composeUiRenderer,
@@ -96,17 +96,17 @@ internal fun <T : ClusteringKey> rememberClusterer(
             .leafMarkerUpdater(composeClusterMarkerUpdater)
             .markerManager(markerManager)
             .apply {
-                if (thresholdStrategyState != null) {
-                    thresholdStrategy(thresholdStrategyState!!)
+                if (thresholdStrategyState.value != null) {
+                    thresholdStrategy(thresholdStrategyState.value!!)
                 }
-                if (distanceStrategyState != null) {
-                    distanceStrategy(distanceStrategyState!!)
+                if (distanceStrategyState.value != null) {
+                    distanceStrategy(distanceStrategyState.value!!)
                 }
-                if (tagMergeStrategyState != null) {
-                    tagMergeStrategy(tagMergeStrategyState!!)
+                if (tagMergeStrategyState.value != null) {
+                    tagMergeStrategy(tagMergeStrategyState.value!!)
                 }
-                if (positionStrategyState != null) {
-                    positioningStrategy(positionStrategyState!!)
+                if (positionStrategyState.value != null) {
+                    positioningStrategy(positionStrategyState.value!!)
                 }
                 if (maxScreenDistance != null) {
                     this.maxScreenDistance(maxScreenDistance)
@@ -164,9 +164,9 @@ internal fun <T : ClusteringKey> rememberClusterer(
 @NaverMapComposable
 public fun <T : ClusteringKey> Clustering(
     items: Map<T, Any?>,
-    clusterContent: @[UiComposable Composable] (ClusterMarkerInfo) -> Unit,
+    clusterContent: @[UiComposable Composable] ((ClusterMarkerInfo) -> Unit)?,
     onClickCluster: (ClusterMarkerInfo, Overlay) -> Boolean,
-    leafContent: @[UiComposable Composable] (LeafMarkerInfo) -> Unit,
+    leafContent: @[UiComposable Composable] ((LeafMarkerInfo) -> Unit)?,
     onClickLeaf: (LeafMarkerInfo, Overlay) -> Boolean,
     updateClusterMarkerData: ((ClusterMarkerInfo, Marker) -> Unit)? = null,
     updateLeafMarkerData: ((LeafMarkerInfo, Marker) -> Unit)? = null,
